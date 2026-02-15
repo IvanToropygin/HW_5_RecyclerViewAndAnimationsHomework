@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import ru.otus.cryptosample.R
 import ru.otus.cryptosample.coins.feature.CoinState
+import ru.otus.cryptosample.coins.feature.adapter.CarouselAdapter.Companion.Payload.HOT_MOVER_CHANGED
 import ru.otus.cryptosample.databinding.ItemCoinBinding
 
 class CoinViewHolder(
@@ -31,6 +32,20 @@ class CoinViewHolder(
             }
 
             fireBadge.isVisible = coin.highlight
+        }
+    }
+
+    fun bind(coin: CoinState, payloads: List<Any>) {
+        val hasHotMoverChange = payloads.any { payload ->
+            payload == CoinsAdapter.CoinDiff.Payload.HOT_MOVER_CHANGED ||
+                    payload == HOT_MOVER_CHANGED
+        }
+
+
+        if (hasHotMoverChange) {
+            binding.fireBadge.isVisible = coin.highlight
+        } else {
+            bind(coin)
         }
     }
 }
