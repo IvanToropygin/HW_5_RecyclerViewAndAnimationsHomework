@@ -28,12 +28,15 @@ class CarouselViewHolder(
     }
 
     fun bind(coins: List<CoinState>, payloads: List<Any>) {
-        val carouselPayload = payloads.firstOrNull { it is CoinsAdapter.CoinDiff.CarouselPayload }
-                as? CoinsAdapter.CoinDiff.CarouselPayload
+        val carouselPayloads = payloads.filterIsInstance<CoinsAdapter.CoinDiff.CarouselPayload>()
 
-        if (carouselPayload != null) {
+        if (carouselPayloads.isNotEmpty()) {
+            val allChanges = carouselPayloads
+                .flatMap { it.positionChanges.entries }
+                .associate { it.key to it.value }
+
             carouselAdapter.submitList(coins) {
-                carouselPayload.positionChanges.forEach { (position, payload) ->
+                allChanges.forEach { (position, payload) ->
                     carouselAdapter.notifyItemChanged(position, payload)
                 }
             }
